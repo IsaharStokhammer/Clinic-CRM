@@ -2,6 +2,11 @@ import { getPatientFullData } from "@/lib/data";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { SessionTimelineItem } from "@/components/SessionTimelineItem";
+import { EditPatientForm } from "@/components/EditPatientForm";
+import { AddSessionDialog } from "@/components/AddSessionDialog";
+import { AddPaymentDialog } from "@/components/AddPaymentDialog";
+import { deleteBilling } from "@/lib/actions";
+import { Trash2 } from "lucide-react";
 
 // Icons
 const ArrowRight = () => (
@@ -50,10 +55,19 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
                             {patient.name[0]}
                         </div>
                         <div>
-                            <h1 className="text-3xl font-black text-gray-900">{patient.name}</h1>
-                            <p className="text-gray-500 font-medium text-lg">הורה: {patient.parentName}</p>
-                            <div className="flex gap-4 mt-2">
-                                <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-bold">
+                            <div className="flex items-center gap-4 mb-1">
+                                <h1 className="text-3xl font-black text-gray-900">{patient.name}</h1>
+                                <EditPatientForm patient={patient} />
+                            </div>
+                            <div className="flex flex-wrap gap-x-6 gap-y-2 text-gray-500 font-medium">
+                                <p className="flex items-center gap-2">שם הורה: {patient.parentName || 'לא צוין'}</p>
+                                <p className="flex items-center gap-2 ltr">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+                                    {patient.phone}
+                                </p>
+                            </div>
+                            <div className="flex gap-4 mt-4">
+                                <span className={`px-3 py-1 rounded-lg text-sm font-bold ${patient.billingType === 'monthly' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700'}`}>
                                     {patient.billingType === 'monthly' ? 'חיוב חודשי' : 'חיוב לפי מפגש'}
                                 </span>
                                 <span className={`px-3 py-1 rounded-lg text-sm font-bold ${patient.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
@@ -122,10 +136,13 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Timeline - Clinical History */}
                     <div className="lg:col-span-2 space-y-6">
-                        <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                            <FileTextIcon />
-                            היסטוריה קלינית ותיעוד
-                        </h2>
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                                <FileTextIcon />
+                                היסטוריה קלינית ותיעוד
+                            </h2>
+                            <AddSessionDialog patientId={id} />
+                        </div>
 
                         <div className="space-y-6 relative before:absolute before:right-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-gray-100">
                             {sessions.map((session, index) => (
@@ -145,10 +162,13 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
 
                     {/* Sidebar - Billing History */}
                     <div className="space-y-6">
-                        <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                            <ReceiptIcon />
-                            היסטוריית תשלומים
-                        </h2>
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                                <ReceiptIcon />
+                                היסטוריית תשלומים
+                            </h2>
+                            <AddPaymentDialog patientId={id} />
+                        </div>
 
                         <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
                             <div className="p-6 border-b border-gray-50 bg-gray-50/30">
@@ -160,7 +180,7 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
                             </div>
                             <div className="divide-y divide-gray-50">
                                 {billing.map(payment => (
-                                    <div key={payment.paymentId} className="p-6 hover:bg-gray-50 transition-colors">
+                                    <div key={payment.paymentId} className="p-6 hover:bg-gray-50 transition-colors group relative">
                                         <div className="flex justify-between items-center mb-1">
                                             <div className="font-bold text-gray-900">₪{payment.amount}</div>
                                             <div className="text-xs font-bold text-gray-400 ltr">{payment.date}</div>
@@ -169,6 +189,17 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
                                             <div className="text-sm text-gray-500">{payment.method}</div>
                                             <div className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md font-bold">{payment.monthRef}</div>
                                         </div>
+                                        <form
+                                            action={async () => {
+                                                'use server';
+                                                await deleteBilling(payment.paymentId);
+                                            }}
+                                            className="absolute left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <button className="p-2 text-gray-300 hover:text-red-500 transition-colors">
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </form>
                                     </div>
                                 ))}
                                 {billing.length === 0 && (

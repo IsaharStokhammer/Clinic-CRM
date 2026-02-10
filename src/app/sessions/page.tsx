@@ -2,6 +2,7 @@ import { addSession, deleteSession } from "@/lib/actions";
 import { getPatients, getSessions } from "@/lib/data";
 import { Session, Patient } from "@/lib/types";
 import { SubmitButton } from "@/components/SubmitButton";
+import { PatientSearchSelect } from "@/components/PatientSearchSelect";
 import Link from "next/link";
 import { Calendar, Clock, CheckCircle, XCircle, AlertCircle, FileText, Home, Lock, Trash2 } from "lucide-react";
 
@@ -59,12 +60,7 @@ export default async function SessionsPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-gray-500 mr-2 uppercase tracking-wide">בחר מטופל</label>
-                                    <select name="patientId" required className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 font-medium text-gray-900 input-focus">
-                                        <option value="">בחר מטופל...</option>
-                                        {activePatients.map(p => (
-                                            <option key={p.id} value={p.id}>{p.name}</option>
-                                        ))}
-                                    </select>
+                                    <PatientSearchSelect patients={activePatients} name="patientId" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">

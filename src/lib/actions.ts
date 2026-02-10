@@ -2,6 +2,7 @@
 
 import { getGoogleSheetsClient, SPREADSHEET_ID } from './googleSheets';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { Patient, Session, ClinicalNote, BillingEntry } from './types';
 
 // --- Patients ---
@@ -32,7 +33,6 @@ export async function addPatient(formData: FormData) {
         });
 
         revalidatePath('/patients');
-        return { success: true };
     } catch (error) {
         console.error('Error adding patient:', error);
         throw new Error('Failed to add patient');
@@ -82,7 +82,6 @@ export async function updatePatient(formData: FormData) {
 
         revalidatePath('/patients');
         revalidatePath(`/patients/${id}`);
-        return { success: true };
     } catch (error) {
         console.error('Error updating patient:', error);
         throw new Error('Failed to update patient');
@@ -126,12 +125,13 @@ export async function deletePatient(id: string) {
         });
 
         revalidatePath('/patients');
-        return { success: true };
-
     } catch (error) {
         console.error('Error deleting patient:', error);
         throw new Error('Failed to delete patient');
     }
+
+    // Redirect must be outside try-catch to work correctly with Next.js actions
+    redirect('/patients');
 }
 
 
@@ -179,7 +179,6 @@ export async function addSession(formData: FormData) {
 
         revalidatePath(`/patients/${patientId}`);
         revalidatePath('/sessions');
-        return { success: true };
     } catch (error) {
         console.error('Error adding session and clinical note:', error);
         throw new Error('Failed to save session');
@@ -239,8 +238,6 @@ export async function deleteSession(sessionId: string) {
         revalidatePath('/sessions');
         // If we knew the patientId we could revalidate their page too, but we don't have it easily here without reading.
         revalidatePath('/');
-        return { success: true };
-
     } catch (error) {
         console.error("Error deleting session:", error);
         throw new Error("Failed to delete session");
@@ -273,11 +270,38 @@ export async function addBilling(formData: FormData) {
             },
         });
 
-        revalidatePath('/billing');
         revalidatePath(`/patients/${patientId}`);
-        return { success: true };
     } catch (error) {
         console.error('Error adding billing entry:', error);
         throw new Error('Failed to add billing entry');
+    }
+}
+
+export async function deleteBilling(paymentId: string) {
+    if (!paymentId) throw new Error('Payment ID is required');
+
+    const sheets = await getGoogleSheetsClient();
+
+    try {
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_ID,
+            range: 'Billing!A:A',
+        });
+
+        const rows = response.data.values || [];
+        const rowIndex = rows.findIndex(row => row[0] === paymentId);
+
+        if (rowIndex !== -1) {
+            const range = `Billing!A${rowIndex + 1}:F${rowIndex + 1}`;
+            await sheets.spreadsheets.values.clear({
+                spreadsheetId: SPREADSHEET_ID,
+                range: range,
+            });
+        }
+
+        revalidatePath('/');
+    } catch (error) {
+        console.error("Error deleting billing entry:", error);
+        throw new Error("Failed to delete billing entry");
     }
 }

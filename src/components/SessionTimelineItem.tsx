@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, FileText, Home, Lock } from 'lucide-react';
+import { ChevronDown, FileText, Home, Lock, Trash2 } from 'lucide-react';
 import { Session, ClinicalNote } from '@/lib/types';
+import { deleteSession } from '@/lib/actions';
 
 interface SessionTimelineItemProps {
     session: Session & { note?: ClinicalNote };
@@ -36,14 +37,25 @@ export function SessionTimelineItem({ session, index }: SessionTimelineItemProps
                                 מפגש טיפולי - {session.startTime} ({session.duration} דק')
                             </h3>
                             <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${session.status === 'attended' ? 'bg-green-100 text-green-700' :
-                                    session.status === 'canceled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
+                                session.status === 'canceled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
                                 }`}>
                                 {session.status === 'attended' ? 'בוצע' : session.status === 'canceled' ? 'בוטל' : 'לא הגיע'}
                             </span>
                         </div>
                     </div>
-                    <div className={`text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-blue-500' : ''}`}>
-                        <ChevronDown size={24} />
+                    <div className="flex items-center gap-2">
+                        <form action={async () => {
+                            if (confirm('האם אתה בטוח שברצונך למחוק מפגש זה?')) {
+                                await deleteSession(session.sessionId);
+                            }
+                        }} onClick={(e) => e.stopPropagation()}>
+                            <button type="submit" className="p-2 text-gray-300 hover:text-red-500 transition-colors" title="מחיקת מפגש">
+                                <Trash2 size={18} />
+                            </button>
+                        </form>
+                        <div className={`text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-blue-500' : ''}`}>
+                            <ChevronDown size={24} />
+                        </div>
                     </div>
                 </button>
 
