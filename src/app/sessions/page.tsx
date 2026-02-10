@@ -21,7 +21,7 @@ export default async function SessionsPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">ניהול מפגשים</h1>
-                        <p className="text-gray-500 mt-2 text-lg font-medium">תיעוד מפגשים טיפוליים, מעקב נוכחות וניהול יומן</p>
+                        <p className="text-gray-500 mt-2 text-lg font-medium">תיעוד מפגשים, מעקב נוכחות וניהול יומן</p>
                     </div>
                     <div className="flex gap-3">
                         <div className="bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
@@ -97,10 +97,10 @@ export default async function SessionsPage() {
                                 <div className="pt-4 border-t border-gray-100">
                                     <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
                                         <FileText size={18} />
-                                        תיעוד קליני
+                                        תיעוד המפגש
                                     </h3>
                                     <div className="space-y-2 mb-4">
-                                        <label className="text-sm font-bold text-gray-500 mr-2 uppercase tracking-wide">תוכן הטיפול (מהלך המפגש)</label>
+                                        <label className="text-sm font-bold text-gray-500 mr-2 uppercase tracking-wide">תוכן המפגש (מהלך המפגש)</label>
                                         <textarea name="therapyContent" className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 font-medium text-gray-900 min-h-[120px] input-focus" placeholder="מה נעשה במפגש? נושאים שעלו, התקדמות..."></textarea>
                                     </div>
 

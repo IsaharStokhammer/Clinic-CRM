@@ -3,8 +3,8 @@ import { Sidebar } from "@/components/Sidebar";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "מערכת ניהול קליניקה",
-  description: "ניהול תלמידים ומפגשים",
+  title: "מערכת ניהול ומעקב",
+  description: "ניהול מטופלים ומפגשים",
 };
 
 export default function RootLayout({

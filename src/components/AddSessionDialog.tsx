@@ -94,10 +94,10 @@ export function AddSessionDialog({ patientId }: { patientId: string }) {
                     <div className="pt-4 border-t border-gray-100">
                         <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
                             <FileText size={18} />
-                            תיעוד קליני
+                            תיעוד המפגש
                         </h3>
                         <div className="space-y-2 mb-4">
-                            <label className="text-sm font-bold text-gray-500 mr-2 uppercase tracking-wide">תוכן הטיפול</label>
+                            <label className="text-sm font-bold text-gray-500 mr-2 uppercase tracking-wide">תוכן המפגש</label>
                             <textarea
                                 name="therapyContent"
                                 className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 font-medium text-gray-900 min-h-[120px]"

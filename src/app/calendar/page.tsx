@@ -20,7 +20,7 @@ export default async function CalendarPage() {
                     </div>
                     <div>
                         <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">יומן פגישות</h1>
-                        <p className="text-gray-500 mt-1 text-lg font-medium">ניהול ומעקב ויזואלי אחר כל המפגשים בקליניקה</p>
+                        <p className="text-gray-500 mt-1 text-lg font-medium">ניהול ומעקב ויזואלי אחר כל המפגשים השוטפים</p>
                     </div>
                 </div>
             </div>

@@ -262,7 +262,7 @@ export default async function SessionsHistoryPage({ searchParams }: HistoryPageP
                                                         <p className="line-clamp-2">{session.note.therapyContent}</p>
                                                     </div>
                                                 ) : (
-                                                    <p className="text-xs text-gray-300 italic">אין תיעוד קליני רשום</p>
+                                                    <p className="text-xs text-gray-300 italic">אין תיעוד רשום</p>
                                                 )}
                                             </div>
 
@@ -272,7 +272,7 @@ export default async function SessionsHistoryPage({ searchParams }: HistoryPageP
                                                     href={`/patients/${session.patientId}?sessionId=${session.sessionId}`}
                                                     className="flex-1 lg:flex-none px-6 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all text-center"
                                                 >
-                                                    לתיק רפואי
+                                                    לתיעוד ומעקב
                                                 </Link>
                                             </div>
                                         </div>

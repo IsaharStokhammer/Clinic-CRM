@@ -50,7 +50,7 @@ export default async function DashboardPage() {
       {/* Header - Fixed */}
       <div className="p-4 md:p-8 lg:p-12 pb-6 border-b border-gray-100 bg-white/50 backdrop-blur-sm z-10">
         <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">לוח בקרה ראשי</h1>
-        <p className="text-gray-500 mt-2 text-lg font-medium">סקירה כללית של הקליניקה שלך</p>
+        <p className="text-gray-500 mt-2 text-lg font-medium">סקירה כללית של הפעילות שלך</p>
       </div>
 
       {/* Scrollable Content */}
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
                   <Clock size={24} />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900">תיעוד מפגש</h3>
-                <p className="text-gray-500 mt-1 font-medium">רישום נוכחות וסיכום טיפול</p>
+                <p className="text-gray-500 mt-1 font-medium">רישום נוכחות וסיכום מפגש</p>
               </div>
               <ArrowRight className="text-gray-300 group-hover:text-indigo-600 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300" size={32} />
             </Link>

@@ -76,7 +76,7 @@ export function PatientList({ initialPatients }: { initialPatients: Patient[] })
                                     </td>
                                     <td className="px-8 py-6">
                                         <div className="flex items-center gap-2">
-                                            <Link href={`/patients/${patient.id}`} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="תיק רפואי">
+                                            <Link href={`/patients/${patient.id}`} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="תיעוד ומעקב">
                                                 <Edit size={18} />
                                             </Link>
                                             <form action={async () => {

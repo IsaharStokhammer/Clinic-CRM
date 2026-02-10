@@ -70,7 +70,7 @@ export default async function BillingPage() {
                                     <Wallet size={24} />
                                     מטופלים בחוב
                                 </h2>
-                                <div className="text-sm text-red-600 font-bold uppercase tracking-wider">נדרש טיפול</div>
+                                <div className="text-sm text-red-600 font-bold uppercase tracking-wider">נדרש מעקב</div>
                             </div>
 
                             <div className="overflow-x-auto">

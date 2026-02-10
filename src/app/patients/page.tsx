@@ -59,7 +59,7 @@ export default async function PatientsPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-500 mr-2 uppercase tracking-wide">שם הורה</label>
+                                    <label className="text-sm font-bold text-gray-500 mr-2 uppercase tracking-wide"> (אם רלוונטי) שם הורה</label>
                                     <input
                                         type="text"
                                         name="parentName"

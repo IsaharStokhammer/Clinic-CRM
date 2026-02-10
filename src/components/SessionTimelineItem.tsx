@@ -37,7 +37,7 @@ export function SessionTimelineItem({ session, index }: SessionTimelineItemProps
 
             {/* Timeline Dot */}
             <div className={`absolute right-3 top-8 w-6 h-6 rounded-full border-4 border-white shadow-md z-10 transition-colors duration-300 ${session.status === 'attended' ? 'bg-blue-600' :
-                    session.status === 'canceled' ? 'bg-rose-500' : 'bg-amber-500'
+                session.status === 'canceled' ? 'bg-rose-500' : 'bg-amber-500'
                 }`}></div>
 
             <div
@@ -59,10 +59,10 @@ export function SessionTimelineItem({ session, index }: SessionTimelineItemProps
                         </div>
                         <div className="flex items-center gap-4">
                             <h3 className="text-xl font-black text-gray-900 tracking-tight group-hover:text-blue-600 transition-colors">
-                                מפגש טיפולי ({session.duration} דק')
+                                מפגש ({session.duration} דק')
                             </h3>
                             <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest ring-1 ring-inset ${session.status === 'attended' ? 'bg-emerald-50 text-emerald-700 ring-emerald-100' :
-                                    session.status === 'canceled' ? 'bg-rose-50 text-rose-700 ring-rose-100' : 'bg-amber-50 text-amber-700 ring-amber-100'
+                                session.status === 'canceled' ? 'bg-rose-50 text-rose-700 ring-rose-100' : 'bg-amber-50 text-amber-700 ring-amber-100'
                                 }`}>
                                 {session.status === 'attended' ? 'בוצע' : session.status === 'canceled' ? 'בוטל' : 'לא הגיע'}
                             </span>
@@ -95,7 +95,7 @@ export function SessionTimelineItem({ session, index }: SessionTimelineItemProps
                                     <div>
                                         <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                                             <FileText size={14} />
-                                            סיכום טיפול
+                                            סיכום מפגש
                                         </p>
                                         <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100 text-gray-700 leading-relaxed">
                                             {session.note.therapyContent || 'אין תיעוד למפגש זה'}

@@ -183,8 +183,8 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
                                     <FileTextIcon />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em]">תיעוד רפואי</p>
-                                    <p className="text-white font-bold text-lg">היסטוריה קלינית</p>
+                                    <p className="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em]">תיעוד ומעקב</p>
+                                    <p className="text-white font-bold text-lg">היסטוריית מפגשים</p>
                                 </div>
                             </div>
                             <AddSessionDialog patientId={id} />
@@ -210,7 +210,7 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
                             <div className="flex justify-between items-center px-4">
                                 <h2 className="text-xl font-black text-gray-900 flex items-center gap-3">
                                     <div className="w-2 h-8 bg-blue-600 rounded-full" />
-                                    ציר זמן טיפולי
+                                    ציר זמן מפגשים
                                 </h2>
                             </div>
 
