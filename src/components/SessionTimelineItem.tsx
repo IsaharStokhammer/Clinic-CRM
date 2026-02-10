@@ -29,29 +29,40 @@ export function SessionTimelineItem({ session, index }: SessionTimelineItemProps
     return (
         <div
             ref={itemRef}
-            className="relative pr-16 animate-slide-up"
+            className="relative pr-16 group/timeline transition-all duration-300"
             style={{ animationDelay: `${index * 0.1}s` }}
         >
-            <div className="absolute right-4 top-6 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm z-10"></div>
+            {/* Timeline Connector */}
+            <div className="absolute right-[1.125rem] top-0 bottom-0 w-px bg-gray-100 group-last/timeline:h-8" />
+
+            {/* Timeline Dot */}
+            <div className={`absolute right-3 top-8 w-6 h-6 rounded-full border-4 border-white shadow-md z-10 transition-colors duration-300 ${session.status === 'attended' ? 'bg-blue-600' :
+                    session.status === 'canceled' ? 'bg-rose-500' : 'bg-amber-500'
+                }`}></div>
 
             <div
-                className={`bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 overflow-hidden ${isOpen ? 'ring-2 ring-blue-100 border-blue-200' : 'hover:border-gray-200 shadow-gray-200/50'
+                className={`bg-white rounded-[2rem] shadow-sm border border-gray-100 transition-all duration-500 overflow-hidden ${isOpen ? 'shadow-xl shadow-gray-200/50 border-blue-100 ring-1 ring-blue-50' : 'hover:shadow-md hover:border-gray-200'
                     }`}
             >
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="w-full text-right p-6 flex justify-between items-center group"
+                    className="w-full text-right p-6 md:p-8 flex justify-between items-center group"
                 >
                     <div className="flex-1">
-                        <div className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">
-                            {new Date(session.date).toLocaleDateString('he-IL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                        <div className="flex items-center gap-3 mb-2">
+                            <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] bg-blue-50 px-2 py-0.5 rounded-md">
+                                {new Date(session.date).toLocaleDateString('he-IL', { day: 'numeric', month: 'short' })}
+                            </span>
+                            <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+                                {new Date(session.date).toLocaleDateString('he-IL', { weekday: 'long' })} • {session.startTime}
+                            </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                                מפגש טיפולי - {session.startTime} ({session.duration} דק')
+                        <div className="flex items-center gap-4">
+                            <h3 className="text-xl font-black text-gray-900 tracking-tight group-hover:text-blue-600 transition-colors">
+                                מפגש טיפולי ({session.duration} דק')
                             </h3>
-                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${session.status === 'attended' ? 'bg-green-100 text-green-700' :
-                                session.status === 'canceled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
+                            <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest ring-1 ring-inset ${session.status === 'attended' ? 'bg-emerald-50 text-emerald-700 ring-emerald-100' :
+                                    session.status === 'canceled' ? 'bg-rose-50 text-rose-700 ring-rose-100' : 'bg-amber-50 text-amber-700 ring-amber-100'
                                 }`}>
                                 {session.status === 'attended' ? 'בוצע' : session.status === 'canceled' ? 'בוטל' : 'לא הגיע'}
                             </span>

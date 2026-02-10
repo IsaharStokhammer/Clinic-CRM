@@ -12,10 +12,10 @@ export function AddPaymentDialog({ patientId }: { patientId: string }) {
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition-all shadow-md shadow-green-100"
+                className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-lg hover:scale-105 active:scale-95 transition-all mr-2 group/btn"
+                title="תשלום חדש"
             >
-                <Plus size={18} />
-                <span>תשלום חדש</span>
+                <Plus size={24} className="group-hover/btn:rotate-90 transition-transform duration-300" />
             </button>
         );
     }

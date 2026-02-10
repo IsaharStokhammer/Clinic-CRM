@@ -12,10 +12,10 @@ export function AddSessionDialog({ patientId }: { patientId: string }) {
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100"
+                className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-indigo-600 shadow-lg hover:scale-105 active:scale-95 transition-all mr-2 group/btn"
+                title="מפגש חדש"
             >
-                <Plus size={18} />
-                <span>מפגש חדש</span>
+                <Plus size={24} className="group-hover/btn:rotate-90 transition-transform duration-300" />
             </button>
         );
     }
