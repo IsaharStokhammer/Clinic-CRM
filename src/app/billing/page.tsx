@@ -2,6 +2,7 @@ import { addBilling } from "@/lib/actions";
 import { getPatients, getSessions, getBillingEntries } from "@/lib/data";
 import { Patient, Session, BillingEntry } from "@/lib/types";
 import { SubmitButton } from "@/components/SubmitButton";
+import { EditPaymentDialog } from "@/components/EditPaymentDialog";
 import Link from "next/link";
 import { CreditCard, Wallet, AlertTriangle, CheckSquare, PlusCircle } from "lucide-react";
 
@@ -133,7 +134,7 @@ export default async function BillingPage() {
                                 {sortedBilling.map(payment => {
                                     const patient = patients.find(p => p.id === payment.patientId);
                                     return (
-                                        <div key={payment.paymentId} className="p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                                        <div key={payment.paymentId} className="p-6 flex justify-between items-center hover:bg-gray-50 transition-colors group relative">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-600 font-bold text-lg">
                                                     ₪
@@ -143,9 +144,14 @@ export default async function BillingPage() {
                                                     <p className="text-xs text-gray-400">{payment.date} • {payment.method}</p>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="font-black text-green-600 text-lg">+₪{payment.amount}</p>
-                                                <p className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded inline-block">עבור {payment.monthRef}</p>
+                                            <div className="flex items-center gap-6">
+                                                <div className="text-right">
+                                                    <p className="font-black text-green-600 text-lg">+₪{payment.amount}</p>
+                                                    <p className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded inline-block">עבור {payment.monthRef}</p>
+                                                </div>
+                                                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <EditPaymentDialog payment={payment} />
+                                                </div>
                                             </div>
                                         </div>
                                     );

@@ -5,6 +5,7 @@ import { SessionTimelineItem } from "@/components/SessionTimelineItem";
 import { EditPatientForm } from "@/components/EditPatientForm";
 import { AddSessionDialog } from "@/components/AddSessionDialog";
 import { AddPaymentDialog } from "@/components/AddPaymentDialog";
+import { EditPaymentDialog } from "@/components/EditPaymentDialog";
 import { deleteBilling } from "@/lib/actions";
 import { Trash2 } from "lucide-react";
 
@@ -195,17 +196,19 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
                                                 <div className="text-sm text-gray-500">{payment.method}</div>
                                                 <div className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md font-bold">{payment.monthRef}</div>
                                             </div>
-                                            <form
-                                                action={async () => {
-                                                    'use server';
-                                                    await deleteBilling(payment.paymentId);
-                                                }}
-                                                className="absolute left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
-                                            >
-                                                <button className="p-2 text-gray-300 hover:text-red-500 transition-colors">
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </form>
+                                            <div className="absolute left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                                <EditPaymentDialog payment={payment} />
+                                                <form
+                                                    action={async () => {
+                                                        'use server';
+                                                        await deleteBilling(payment.paymentId);
+                                                    }}
+                                                >
+                                                    <button className="p-2 text-gray-300 hover:text-red-500 transition-colors" title="מחיקת תשלום">
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     ))}
                                     {billing.length === 0 && (

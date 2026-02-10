@@ -305,3 +305,49 @@ export async function deleteBilling(paymentId: string) {
         throw new Error("Failed to delete billing entry");
     }
 }
+
+export async function updateBilling(formData: FormData) {
+    const paymentId = formData.get('paymentId') as string;
+    const patientId = formData.get('patientId') as string;
+    const date = formData.get('date') as string;
+    const amount = formData.get('amount') as string;
+    const method = formData.get('method') as string;
+    const monthRef = formData.get('monthRef') as string;
+
+    if (!paymentId || !patientId || !date || !amount || !method || !monthRef) {
+        throw new Error('All billing fields are required');
+    }
+
+    const sheets = await getGoogleSheetsClient();
+
+    try {
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_ID,
+            range: 'Billing!A:A',
+        });
+
+        const rows = response.data.values || [];
+        const rowIndex = rows.findIndex(row => row[0] === paymentId);
+
+        if (rowIndex === -1) {
+            throw new Error('Payment not found');
+        }
+
+        const range = `Billing!A${rowIndex + 1}:F${rowIndex + 1}`;
+
+        await sheets.spreadsheets.values.update({
+            spreadsheetId: SPREADSHEET_ID,
+            range: range,
+            valueInputOption: 'RAW',
+            requestBody: {
+                values: [[paymentId, patientId, date, amount, method, monthRef]],
+            },
+        });
+
+        revalidatePath(`/patients/${patientId}`);
+        revalidatePath('/billing');
+    } catch (error) {
+        console.error('Error updating billing entry:', error);
+        throw new Error('Failed to update billing entry');
+    }
+}
