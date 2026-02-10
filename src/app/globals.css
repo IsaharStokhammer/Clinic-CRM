@@ -12,14 +12,18 @@
   --color-border: hsl(214 32% 91%);
 }
 
-@layer base {
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
   body {
     font-family: var(--font-assistant);
     background-color: var(--color-background);
     color: var(--color-foreground);
     -webkit-font-smoothing: antialiased;
   }
-}
 
 .glass-card {
   background: rgba(255, 255, 255, 0.8);

@@ -14,9 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="he" dir="rtl">
-      <body className="flex min-h-screen bg-[#f8fafc]">
+      <body className="flex h-screen bg-[#f8fafc] overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto h-screen">
+        <main className="flex-1 h-screen overflow-hidden relative">
           {children}
         </main>
       </body>
