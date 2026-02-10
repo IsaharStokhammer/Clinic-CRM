@@ -120,7 +120,12 @@ export default async function DashboardPage() {
 
         {/* Recent Activity Mini-Feed */}
         <div className="pb-12">
-          <h2 className="text-xl font-bold text-gray-800 mb-6">עדכונים אחרונים</h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-800">עדכונים אחרונים</h2>
+            <Link href="/sessions/history" className="text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors">
+              צפה בהכל
+            </Link>
+          </div>
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
             {sessions.slice(0, 3).map(s => {
               const p = patients.find(pat => pat.id === s.patientId);
