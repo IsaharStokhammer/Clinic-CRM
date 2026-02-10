@@ -13,10 +13,10 @@ export function EditPatientForm({ patient }: { patient: Patient }) {
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-all shadow-sm"
+                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
+                title="עריכת פרטים"
             >
                 <Pencil size={18} />
-                <span>עריכת פרטים</span>
             </button>
         );
     }

@@ -60,17 +60,17 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
                         <div className="p-8 md:p-10 flex flex-col lg:flex-row gap-10">
                             {/* Profile Info Side */}
                             <div className="flex-1 flex flex-col md:flex-row items-center md:items-start gap-8">
-                                <div className="relative group shrink-0">
-                                    <div className="w-28 h-28 rounded-[2.5rem] bg-gradient-to-br from-indigo-500 via-blue-600 to-blue-700 flex items-center justify-center text-white font-black text-4xl shadow-2xl shadow-blue-200 group-hover:scale-105 transition-transform duration-300">
+                                <div className="shrink-0">
+                                    <div className="w-28 h-28 rounded-[2.5rem] bg-gradient-to-br from-indigo-500 via-blue-600 to-blue-700 flex items-center justify-center text-white font-black text-4xl shadow-2xl shadow-blue-200">
                                         {patient.name[0]}
-                                    </div>
-                                    <div className="absolute -bottom-2 -left-2 w-10 h-10 bg-white rounded-2xl shadow-lg border border-gray-50 flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer ring-4 ring-white">
-                                        <EditPatientForm patient={patient} />
                                     </div>
                                 </div>
                                 <div className="text-center md:text-right flex-1">
                                     <div className="flex flex-col gap-2 mb-6">
-                                        <h1 className="text-4xl font-black text-gray-900 tracking-tight">{patient.name}</h1>
+                                        <div className="flex items-center justify-center md:justify-start gap-4">
+                                            <h1 className="text-4xl font-black text-gray-900 tracking-tight">{patient.name}</h1>
+                                            <EditPatientForm patient={patient} />
+                                        </div>
                                         <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-2">
                                             <span className={`px-4 py-1.5 rounded-2xl text-xs font-black uppercase tracking-widest ${patient.status === 'active' ? 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100' : 'bg-rose-50 text-rose-600 ring-1 ring-rose-100'}`}>
                                                 {patient.status === 'active' ? 'מטופל פעיל' : 'לא פעיל'}
