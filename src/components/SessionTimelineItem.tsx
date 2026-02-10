@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ChevronDown, FileText, Home, Lock, Trash2 } from 'lucide-react';
 import { Session, ClinicalNote } from '@/lib/types';
 import { deleteSession } from '@/lib/actions';
@@ -11,10 +12,23 @@ interface SessionTimelineItemProps {
 }
 
 export function SessionTimelineItem({ session, index }: SessionTimelineItemProps) {
+    const searchParams = useSearchParams();
+    const sessionId = searchParams.get('sessionId');
     const [isOpen, setIsOpen] = useState(false);
+    const itemRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (sessionId === session.sessionId) {
+            setIsOpen(true);
+            setTimeout(() => {
+                itemRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 500);
+        }
+    }, [sessionId, session.sessionId]);
 
     return (
         <div
+            ref={itemRef}
             className="relative pr-16 animate-slide-up"
             style={{ animationDelay: `${index * 0.1}s` }}
         >

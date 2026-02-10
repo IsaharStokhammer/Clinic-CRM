@@ -16,7 +16,7 @@ export default async function SessionsPage() {
 
     return (
         <div className="flex flex-col h-full overflow-hidden" dir="rtl">
-            {/* Header */}
+            {/* Header ... */}
             <div className="p-4 md:p-8 lg:p-12 pb-6 border-b border-gray-100 bg-white/50 backdrop-blur-sm z-10">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
@@ -141,7 +141,7 @@ export default async function SessionsPage() {
                                 {sortedSessions.slice(0, 10).map((session, index) => {
                                     const patient = patients.find(p => p.id === session.patientId);
                                     return (
-                                        <div key={session.sessionId} className="p-6 hover:bg-indigo-50/30 transition-all flex items-start gap-4 group">
+                                        <div key={session.sessionId} id={`session-${session.sessionId}`} className="p-6 hover:bg-indigo-50/30 transition-all flex items-start gap-4 group rounded-2xl mx-2 my-1">
                                             <div className="mt-1">
                                                 {session.status === 'attended' ? <CheckCircle size={20} className="text-green-500" /> :
                                                     session.status === 'canceled' ? <XCircle size={20} className="text-red-500" /> :

@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Users, Calendar, CreditCard, Settings, LogOut } from 'lucide-react';
+import { Home, Users, Calendar, CreditCard, Clock, Settings, LogOut } from 'lucide-react';
 
 const menuItems = [
     { name: 'דשבורד', icon: Home, href: '/' },
+    { name: 'יומן', icon: Calendar, href: '/calendar' },
     { name: 'מטופלים', icon: Users, href: '/patients' },
-    { name: 'מפגשים', icon: Calendar, href: '/sessions' },
+    { name: 'מפגשים', icon: Clock, href: '/sessions' },
     { name: 'כספים', icon: CreditCard, href: '/billing' },
 ];
 
@@ -31,8 +32,8 @@ export function Sidebar() {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${isActive
-                                    ? 'bg-blue-50 text-blue-700 shadow-sm shadow-blue-100'
-                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                ? 'bg-blue-50 text-blue-700 shadow-sm shadow-blue-100'
+                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                                 }`}
                         >
                             <item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />

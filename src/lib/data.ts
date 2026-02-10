@@ -38,14 +38,16 @@ export async function getSessions(): Promise<Session[]> {
 
         const rows = response.data.values || [];
 
-        return rows.map(row => ({
-            sessionId: row[0],
-            patientId: row[1],
-            date: row[2],
-            startTime: row[3],
-            duration: row[4],
-            status: row[5] as 'attended' | 'canceled' | 'missed',
-        }));
+        return rows
+            .filter(row => row.length > 0 && row[0]) // Filter out empty rows or rows without ID
+            .map(row => ({
+                sessionId: row[0],
+                patientId: row[1],
+                date: row[2],
+                startTime: row[3],
+                duration: row[4],
+                status: row[5] as 'attended' | 'canceled' | 'missed',
+            }));
     } catch (error) {
         console.error('Error fetching sessions:', error);
         return [];
@@ -63,12 +65,14 @@ export async function getClinicalNotes(): Promise<ClinicalNote[]> {
 
         const rows = response.data.values || [];
 
-        return rows.map(row => ({
-            sessionId: row[0],
-            therapyContent: row[1],
-            homework: row[2],
-            internalPrivateNotes: row[3],
-        }));
+        return rows
+            .filter(row => row.length > 0 && row[0])
+            .map(row => ({
+                sessionId: row[0],
+                therapyContent: row[1],
+                homework: row[2],
+                internalPrivateNotes: row[3],
+            }));
     } catch (error) {
         console.error('Error fetching clinical notes:', error);
         return [];
@@ -86,14 +90,16 @@ export async function getBillingEntries(): Promise<BillingEntry[]> {
 
         const rows = response.data.values || [];
 
-        return rows.map(row => ({
-            paymentId: row[0],
-            patientId: row[1],
-            date: row[2],
-            amount: Number(row[3]),
-            method: row[4],
-            monthRef: row[5],
-        }));
+        return rows
+            .filter(row => row.length > 0 && row[0])
+            .map(row => ({
+                paymentId: row[0],
+                patientId: row[1],
+                date: row[2],
+                amount: Number(row[3]),
+                method: row[4],
+                monthRef: row[5],
+            }));
     } catch (error) {
         console.error('Error fetching billing entries:', error);
         return [];

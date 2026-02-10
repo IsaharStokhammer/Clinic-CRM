@@ -18,7 +18,7 @@ function calculateTotalDebt(patients: Patient[], sessions: Session[], billing: B
       const attendedSessions = patientSessions.filter(s => s.status === 'attended');
       totalExpected = attendedSessions.length * patient.rate;
     } else {
-      const months = new Set(patientSessions.map(s => s.date.substring(0, 7)));
+      const months = new Set(patientSessions.filter(s => s.date).map(s => s.date.substring(0, 7)));
       totalExpected = months.size * patient.rate;
     }
 
@@ -43,7 +43,7 @@ export default async function DashboardPage() {
 
   // Sessions this month
   const currentMonth = new Date().toISOString().substring(0, 7);
-  const sessionsThisMonth = sessions.filter(s => s.date.startsWith(currentMonth) && s.status === 'attended').length;
+  const sessionsThisMonth = sessions.filter(s => s.date && s.date.startsWith(currentMonth) && s.status === 'attended').length;
 
   return (
     <div className="flex flex-col h-full overflow-hidden" dir="rtl">
@@ -88,6 +88,7 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+
         {/* Quick Actions */}
         <div>
           <h2 className="text-2xl font-bold text-gray-800 mb-6">פעולות מהירות</h2>
@@ -118,7 +119,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Recent Activity Mini-Feed */}
-        <div>
+        <div className="pb-12">
           <h2 className="text-xl font-bold text-gray-800 mb-6">עדכונים אחרונים</h2>
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
             {sessions.slice(0, 3).map(s => {
