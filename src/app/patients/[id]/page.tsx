@@ -1,0 +1,181 @@
+import { getPatientFullData } from "@/lib/data";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+
+// Icons
+const ArrowRight = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+);
+
+const CalendarIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
+);
+
+const FileTextIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg>
+);
+
+const HomeIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+);
+
+const LockIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+);
+
+export default async function PatientDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const data = await getPatientFullData(id);
+
+    if (!data) {
+        notFound();
+    }
+
+    const { patient, sessions, billing } = data;
+
+    return (
+        <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8 lg:p-12" dir="rtl">
+            <div className="max-w-5xl mx-auto space-y-8">
+                {/* Navigation */}
+                <Link href="/" className="inline-flex items-center gap-2 text-blue-600 font-bold hover:gap-3 transition-all">
+                    <ArrowRight />
+                    <span>חזרה לדף הראשי</span>
+                </Link>
+
+                {/* Header Card */}
+                <div className="bg-white p-8 rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
+                    <div className="flex items-center gap-6">
+                        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-3xl shadow-lg">
+                            {patient.name[0]}
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-black text-gray-900">{patient.name}</h1>
+                            <p className="text-gray-500 font-medium text-lg">הורה: {patient.parentName}</p>
+                            <div className="flex gap-4 mt-2">
+                                <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-bold">
+                                    {patient.billingType === 'monthly' ? 'חיוב חודשי' : 'חיוב לפי מפגש'}
+                                </span>
+                                <span className={`px-3 py-1 rounded-lg text-sm font-bold ${patient.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                                    {patient.status === 'active' ? 'פעיל' : 'לא פעיל'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Main Timeline - Clinical History */}
+                    <div className="lg:col-span-2 space-y-6">
+                        <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                            <FileTextIcon />
+                            היסטוריה קלינית ותיעוד
+                        </h2>
+
+                        <div className="space-y-6 relative before:absolute before:right-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-gray-100">
+                            {sessions.map((session, index) => (
+                                <div key={session.sessionId} className="relative pr-16 animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                                    <div className="absolute right-4 top-1 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm z-10"></div>
+                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <div className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">
+                                                    {new Date(session.date).toLocaleDateString('he-IL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                                </div>
+                                                <h3 className="text-lg font-bold text-gray-900">מפגש טיפולי - {session.startTime} ({session.duration} דק')</h3>
+                                            </div>
+                                            <span className={`px-3 py-1 rounded-full text-xs font-black ${session.status === 'attended' ? 'bg-green-100 text-green-700' :
+                                                    session.status === 'canceled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
+                                                }`}>
+                                                {session.status === 'attended' ? 'בוצע' : session.status === 'canceled' ? 'בוטל' : 'לא הגיע'}
+                                            </span>
+                                        </div>
+
+                                        {session.note && (
+                                            <div className="space-y-4 pt-4 border-t border-gray-50">
+                                                <div>
+                                                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 flex items-center gap-2">
+                                                        <FileTextIcon />
+                                                        סיכום טיפול
+                                                    </p>
+                                                    <p className="text-gray-700 leading-relaxed">{session.note.therapyContent || 'אין תיעוד למפגש זה'}</p>
+                                                </div>
+
+                                                {session.note.homework && (
+                                                    <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
+                                                        <p className="text-xs font-black text-blue-400 uppercase tracking-widest mb-1 flex items-center gap-2">
+                                                            <HomeIcon />
+                                                            תרגול/שיעורי בית
+                                                        </p>
+                                                        <p className="text-blue-800">{session.note.homework}</p>
+                                                    </div>
+                                                )}
+
+                                                {session.note.internalPrivateNotes && (
+                                                    <div className="bg-amber-50/30 p-4 rounded-xl border border-amber-100/50 border-dashed">
+                                                        <p className="text-xs font-black text-amber-500 uppercase tracking-widest mb-1 flex items-center gap-2">
+                                                            <LockIcon />
+                                                            הערות פנימיות
+                                                        </p>
+                                                        <p className="text-amber-800 italic text-sm">{session.note.internalPrivateNotes}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+
+                            {sessions.length === 0 && (
+                                <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+                                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
+                                        <CalendarIcon />
+                                    </div>
+                                    <p className="text-gray-400 font-medium">טרם תועדו מפגשים עבור מטופל זה</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Sidebar - Billing History */}
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                            <ReceiptIcon />
+                            היסטוריית תשלומים
+                        </h2>
+
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+                            <div className="p-6 border-b border-gray-50 bg-gray-50/30">
+                                <div className="text-sm font-bold text-gray-400 uppercase mb-1">סיכום תשלומים</div>
+                                <div className="text-2xl font-black text-gray-900">
+                                    <span className="text-gray-300 text-lg ml-1 font-normal">₪</span>
+                                    {billing.reduce((sum, b) => sum + b.amount, 0)}
+                                </div>
+                            </div>
+                            <div className="divide-y divide-gray-50">
+                                {billing.map(payment => (
+                                    <div key={payment.paymentId} className="p-6 hover:bg-gray-50 transition-colors">
+                                        <div className="flex justify-between items-center mb-1">
+                                            <div className="font-bold text-gray-900">₪{payment.amount}</div>
+                                            <div className="text-xs font-bold text-gray-400 ltr">{payment.date}</div>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <div className="text-sm text-gray-500">{payment.method}</div>
+                                            <div className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md font-bold">{payment.monthRef}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {billing.length === 0 && (
+                                    <div className="p-8 text-center text-gray-400 italic text-sm">לא נמצאו תשלומים</div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+const ReceiptIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5V6.5" /></svg>
+);
