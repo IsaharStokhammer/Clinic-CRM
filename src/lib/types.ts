@@ -1,7 +1,7 @@
 export interface Patient {
     id: string;
     name: string;
-    parentName: string;
+    parentName?: string;
     phone: string;
     billingType: 'per-session' | 'monthly';
     rate: number;

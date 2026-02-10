@@ -1,6 +1,7 @@
 import { getPatientFullData } from "@/lib/data";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { SessionTimelineItem } from "@/components/SessionTimelineItem";
 
 // Icons
 const ArrowRight = () => (
@@ -43,9 +44,9 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
                 </Link>
 
                 {/* Header Card */}
-                <div className="bg-white p-8 rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
+                <div className="bg-white p-8 rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 flex flex-col lg:flex-row justify-between gap-8 items-start lg:items-center">
                     <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-3xl shadow-lg">
+                        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-3xl shadow-lg shrink-0">
                             {patient.name[0]}
                         </div>
                         <div>
@@ -61,6 +62,61 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
                             </div>
                         </div>
                     </div>
+
+                    {/* Quick Stats Table */}
+                    <div className="w-full lg:w-auto bg-gray-50/50 rounded-[1.5rem] p-6 border border-gray-100 shadow-sm">
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-6 sm:gap-0 sm:divide-x sm:divide-x-reverse divide-gray-200">
+                            <div className="text-center sm:px-4">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">ביקורים</p>
+                                <p className="text-2xl font-black text-gray-900">{sessions.filter(s => s.status === 'attended').length}</p>
+                            </div>
+                            <div className="text-center sm:px-4">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">סך הכל מחיר</p>
+                                <p className="text-2xl font-black text-gray-900">
+                                    <span className="text-sm font-normal text-gray-400 ml-0.5">₪</span>
+                                    {patient.billingType === 'per-session'
+                                        ? sessions.filter(s => s.status === 'attended').length * patient.rate
+                                        : new Set(sessions.map(s => s.date.substring(0, 7))).size * patient.rate
+                                    }
+                                </p>
+                            </div>
+                            <div className="text-center sm:px-4">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">סך הכל שולם</p>
+                                <p className="text-2xl font-black text-green-600">
+                                    <span className="text-sm font-normal text-green-400 ml-0.5">₪</span>
+                                    {billing.reduce((sum, b) => sum + b.amount, 0)}
+                                </p>
+                            </div>
+                            <div className="text-center sm:px-4">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">לתשלום</p>
+                                <p className={`text-2xl font-black ${((patient.billingType === 'per-session'
+                                    ? sessions.filter(s => s.status === 'attended').length * patient.rate
+                                    : new Set(sessions.map(s => s.date.substring(0, 7))).size * patient.rate) -
+                                    billing.reduce((sum, b) => sum + b.amount, 0)) > 0 ? 'text-red-600' : 'text-gray-900'
+                                    }`}>
+                                    <span className="text-sm font-normal opacity-50 ml-0.5">₪</span>
+                                    {Math.max(0, (
+                                        (patient.billingType === 'per-session'
+                                            ? sessions.filter(s => s.status === 'attended').length * patient.rate
+                                            : new Set(sessions.map(s => s.date.substring(0, 7))).size * patient.rate) -
+                                        billing.reduce((sum, b) => sum + b.amount, 0)
+                                    ))}
+                                </p>
+                            </div>
+                            <div className="text-center sm:px-4">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">עודף</p>
+                                <p className="text-2xl font-black text-blue-600">
+                                    <span className="text-sm font-normal text-blue-300 ml-0.5">₪</span>
+                                    {Math.max(0, (
+                                        billing.reduce((sum, b) => sum + b.amount, 0) -
+                                        (patient.billingType === 'per-session'
+                                            ? sessions.filter(s => s.status === 'attended').length * patient.rate
+                                            : new Set(sessions.map(s => s.date.substring(0, 7))).size * patient.rate)
+                                    ))}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -73,56 +129,7 @@ export default async function PatientDetailsPage({ params }: { params: Promise<{
 
                         <div className="space-y-6 relative before:absolute before:right-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-gray-100">
                             {sessions.map((session, index) => (
-                                <div key={session.sessionId} className="relative pr-16 animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                                    <div className="absolute right-4 top-1 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm z-10"></div>
-                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-                                        <div className="flex justify-between items-start">
-                                            <div>
-                                                <div className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">
-                                                    {new Date(session.date).toLocaleDateString('he-IL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                                                </div>
-                                                <h3 className="text-lg font-bold text-gray-900">מפגש טיפולי - {session.startTime} ({session.duration} דק')</h3>
-                                            </div>
-                                            <span className={`px-3 py-1 rounded-full text-xs font-black ${session.status === 'attended' ? 'bg-green-100 text-green-700' :
-                                                    session.status === 'canceled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
-                                                }`}>
-                                                {session.status === 'attended' ? 'בוצע' : session.status === 'canceled' ? 'בוטל' : 'לא הגיע'}
-                                            </span>
-                                        </div>
-
-                                        {session.note && (
-                                            <div className="space-y-4 pt-4 border-t border-gray-50">
-                                                <div>
-                                                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                                        <FileTextIcon />
-                                                        סיכום טיפול
-                                                    </p>
-                                                    <p className="text-gray-700 leading-relaxed">{session.note.therapyContent || 'אין תיעוד למפגש זה'}</p>
-                                                </div>
-
-                                                {session.note.homework && (
-                                                    <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
-                                                        <p className="text-xs font-black text-blue-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                                            <HomeIcon />
-                                                            תרגול/שיעורי בית
-                                                        </p>
-                                                        <p className="text-blue-800">{session.note.homework}</p>
-                                                    </div>
-                                                )}
-
-                                                {session.note.internalPrivateNotes && (
-                                                    <div className="bg-amber-50/30 p-4 rounded-xl border border-amber-100/50 border-dashed">
-                                                        <p className="text-xs font-black text-amber-500 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                                            <LockIcon />
-                                                            הערות פנימיות
-                                                        </p>
-                                                        <p className="text-amber-800 italic text-sm">{session.note.internalPrivateNotes}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                                <SessionTimelineItem key={session.sessionId} session={session} index={index} />
                             ))}
 
                             {sessions.length === 0 && (
