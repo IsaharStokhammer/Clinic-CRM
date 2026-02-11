@@ -9,6 +9,7 @@ import { Phone, Users, Trash2, Edit } from "lucide-react";
 export default async function PatientsPage() {
     const patients = await getPatients();
     const activePatients = patients.filter(p => p.status === 'active');
+    const inactivePatients = patients.filter(p => p.status === 'inactive');
 
     return (
         <div className="flex flex-col h-full overflow-hidden" dir="rtl">
@@ -114,7 +115,7 @@ export default async function PatientsPage() {
 
                     {/* Patients List */}
                     <div className="xl:col-span-8">
-                        <PatientList initialPatients={activePatients} />
+                        <PatientList allPatients={patients} />
                     </div>
                 </div>
             </div>

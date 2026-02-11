@@ -34,7 +34,7 @@ export default async function DashboardPage() {
   await initializeDatabase();
 
   const patients = await getPatients();
-  const sessions = await getSessions();
+  const sessions = (await getSessions()).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const billing = await getBillingEntries();
   const activePatients = patients.filter(p => p.status === 'active');
 
@@ -130,12 +130,16 @@ export default async function DashboardPage() {
             {sessions.slice(0, 3).map(s => {
               const p = patients.find(pat => pat.id === s.patientId);
               return (
-                <div key={s.sessionId} className="flex items-center gap-4 text-sm pb-4 border-b border-gray-50 last:border-0 last:pb-0">
+                <Link
+                  key={s.sessionId}
+                  href={`/patients/${s.patientId}?sessionId=${s.sessionId}`}
+                  className="flex items-center gap-4 text-sm pb-4 border-b border-gray-50 last:border-0 last:pb-0 hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-lg"
+                >
                   <div className="w-2 h-2 rounded-full bg-indigo-400"></div>
                   <span className="text-gray-500">{s.date}</span>
                   <span className="font-bold text-gray-900">מפגש {s.status === 'attended' ? 'בוצע' : 'בוטל'}</span>
                   <span className="text-gray-500">עבור {p?.name}</span>
-                </div>
+                </Link>
               )
             })}
             {sessions.length === 0 && <p className="text-gray-400 italic">אין פעילות אחרונה</p>}

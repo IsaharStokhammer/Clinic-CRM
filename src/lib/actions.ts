@@ -134,6 +134,44 @@ export async function deletePatient(id: string) {
     redirect('/patients');
 }
 
+export async function restorePatient(id: string) {
+    if (!id) throw new Error('Patient ID is required');
+
+    const sheets = await getGoogleSheetsClient();
+
+    try {
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_ID,
+            range: 'Patients!A:G',
+        });
+
+        const rows = response.data.values || [];
+        const rowIndex = rows.findIndex(row => row[0] === id);
+
+        if (rowIndex === -1) {
+            throw new Error('Patient not found');
+        }
+
+        const range = `Patients!G${rowIndex + 1}`;
+
+        await sheets.spreadsheets.values.update({
+            spreadsheetId: SPREADSHEET_ID,
+            range: range,
+            valueInputOption: 'RAW',
+            requestBody: {
+                values: [['active']],
+            },
+        });
+
+        revalidatePath('/patients');
+    } catch (error) {
+        console.error('Error restoring patient:', error);
+        throw new Error('Failed to restore patient');
+    }
+
+    redirect('/patients');
+}
+
 
 // --- Sessions ---
 
