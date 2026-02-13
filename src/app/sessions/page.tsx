@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { addSession, deleteSession } from "@/lib/actions";
 import { getPatients, getSessions } from "@/lib/data";
 import { Session, Patient } from "@/lib/types";

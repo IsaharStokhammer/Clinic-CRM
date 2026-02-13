@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPatients, getSessions, getClinicalNotes } from "@/lib/data";
 import { Session, Patient, ClinicalNote } from "@/lib/types";
 import Link from "next/link";

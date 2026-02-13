@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPatients, getSessions, getClinicalNotes } from "@/lib/data";
 import { initializeDatabase } from "@/lib/initSheet";
 import { SessionCalendar } from "@/components/SessionCalendar";

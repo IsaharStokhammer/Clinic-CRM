@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { addBilling } from "@/lib/actions";
 import { getPatients, getSessions, getBillingEntries } from "@/lib/data";
 import { Patient, Session, BillingEntry } from "@/lib/types";
