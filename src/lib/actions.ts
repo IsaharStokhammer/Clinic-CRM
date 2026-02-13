@@ -1,6 +1,6 @@
 'use server';
 
-import { getGoogleSheetsClient, SPREADSHEET_ID } from './googleSheets';
+import { getGoogleSheetsClient, getSpreadsheetId } from './googleSheets';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { Patient, Session, ClinicalNote, BillingEntry } from './types';
@@ -19,12 +19,13 @@ export async function addPatient(formData: FormData) {
     }
 
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
     const id = crypto.randomUUID();
     const status = 'active';
 
     try {
         await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Patients!A:G',
             valueInputOption: 'RAW',
             requestBody: {
@@ -53,11 +54,12 @@ export async function updatePatient(formData: FormData) {
     }
 
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
     try {
         // 1. Find the row index
         const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Patients!A:A',
         });
 
@@ -72,7 +74,7 @@ export async function updatePatient(formData: FormData) {
         const range = `Patients!A${rowIndex + 1}:G${rowIndex + 1}`;
 
         await sheets.spreadsheets.values.update({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: range,
             valueInputOption: 'RAW',
             requestBody: {
@@ -92,11 +94,12 @@ export async function deletePatient(id: string) {
     if (!id) throw new Error('Patient ID is required');
 
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
     try {
         // Soft delete: Find row and update status to 'inactive' (or 'deleted' if preferred, but user asked for soft delete 'inactive')
         const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Patients!A:G',
         });
 
@@ -116,7 +119,7 @@ export async function deletePatient(id: string) {
         const range = `Patients!G${rowIndex + 1}`;
 
         await sheets.spreadsheets.values.update({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: range,
             valueInputOption: 'RAW',
             requestBody: {
@@ -138,10 +141,11 @@ export async function restorePatient(id: string) {
     if (!id) throw new Error('Patient ID is required');
 
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
     try {
         const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Patients!A:G',
         });
 
@@ -155,7 +159,7 @@ export async function restorePatient(id: string) {
         const range = `Patients!G${rowIndex + 1}`;
 
         await sheets.spreadsheets.values.update({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: range,
             valueInputOption: 'RAW',
             requestBody: {
@@ -192,12 +196,13 @@ export async function addSession(formData: FormData) {
     }
 
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
     const sessionId = crypto.randomUUID();
 
     try {
         // 1. Add Session
         await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Sessions!A:F',
             valueInputOption: 'RAW',
             requestBody: {
@@ -207,7 +212,7 @@ export async function addSession(formData: FormData) {
 
         // 2. Add Clinical Note linked by sessionId
         await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'ClinicalNotes!A:D',
             valueInputOption: 'RAW',
             requestBody: {
@@ -235,11 +240,12 @@ export async function deleteSession(sessionId: string) {
     // Let's try to actually delete the row from "Sessions" and "ClinicalNotes".
 
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
     try {
         // Find session row
         const sessionResponse = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Sessions!A:A',
         });
 
@@ -252,14 +258,14 @@ export async function deleteSession(sessionId: string) {
 
             const range = `Sessions!A${sessionRowIndex + 1}:F${sessionRowIndex + 1}`;
             await sheets.spreadsheets.values.clear({
-                spreadsheetId: SPREADSHEET_ID,
+                spreadsheetId,
                 range: range,
             });
         }
 
         // Also clear notes? (Optional but good for cleanup)
         const notesResponse = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'ClinicalNotes!A:A',
         });
         const notesRows = notesResponse.data.values || [];
@@ -268,7 +274,7 @@ export async function deleteSession(sessionId: string) {
         if (notesRowIndex !== -1) {
             const range = `ClinicalNotes!A${notesRowIndex + 1}:D${notesRowIndex + 1}`;
             await sheets.spreadsheets.values.clear({
-                spreadsheetId: SPREADSHEET_ID,
+                spreadsheetId,
                 range: range,
             });
         }
@@ -296,11 +302,12 @@ export async function addBilling(formData: FormData) {
     }
 
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
     const paymentId = crypto.randomUUID();
 
     try {
         await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Billing!A:F',
             valueInputOption: 'RAW',
             requestBody: {
@@ -319,10 +326,11 @@ export async function deleteBilling(paymentId: string) {
     if (!paymentId) throw new Error('Payment ID is required');
 
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
     try {
         const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Billing!A:A',
         });
 
@@ -332,7 +340,7 @@ export async function deleteBilling(paymentId: string) {
         if (rowIndex !== -1) {
             const range = `Billing!A${rowIndex + 1}:F${rowIndex + 1}`;
             await sheets.spreadsheets.values.clear({
-                spreadsheetId: SPREADSHEET_ID,
+                spreadsheetId,
                 range: range,
             });
         }
@@ -357,10 +365,11 @@ export async function updateBilling(formData: FormData) {
     }
 
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
     try {
         const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Billing!A:A',
         });
 
@@ -374,7 +383,7 @@ export async function updateBilling(formData: FormData) {
         const range = `Billing!A${rowIndex + 1}:F${rowIndex + 1}`;
 
         await sheets.spreadsheets.values.update({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: range,
             valueInputOption: 'RAW',
             requestBody: {

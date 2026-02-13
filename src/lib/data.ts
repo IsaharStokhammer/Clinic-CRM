@@ -1,12 +1,13 @@
-import { getGoogleSheetsClient, SPREADSHEET_ID } from './googleSheets';
+import { getGoogleSheetsClient, getSpreadsheetId } from './googleSheets';
 import { Patient, Session, ClinicalNote, BillingEntry } from './types';
 
 export async function getPatients(): Promise<Patient[]> {
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
     try {
         const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Patients!A2:G', // Skip headers
         });
 
@@ -29,10 +30,11 @@ export async function getPatients(): Promise<Patient[]> {
 
 export async function getSessions(): Promise<Session[]> {
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
     try {
         const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Sessions!A2:F',
         });
 
@@ -56,10 +58,11 @@ export async function getSessions(): Promise<Session[]> {
 
 export async function getClinicalNotes(): Promise<ClinicalNote[]> {
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
     try {
         const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'ClinicalNotes!A2:D',
         });
 
@@ -81,10 +84,11 @@ export async function getClinicalNotes(): Promise<ClinicalNote[]> {
 
 export async function getBillingEntries(): Promise<BillingEntry[]> {
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
     try {
         const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Billing!A2:F',
         });
 

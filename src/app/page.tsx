@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPatients, getSessions, getBillingEntries } from "@/lib/data";
 import { initializeDatabase } from "@/lib/initSheet";
 import Link from "next/link";

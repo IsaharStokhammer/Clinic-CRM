@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { addPatient, deletePatient } from "@/lib/actions";
 import { getPatients } from "@/lib/data";
 import { Patient } from "@/lib/types";

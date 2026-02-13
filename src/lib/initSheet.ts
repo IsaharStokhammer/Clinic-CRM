@@ -1,4 +1,4 @@
-import { getGoogleSheetsClient, SPREADSHEET_ID } from './googleSheets';
+import { getGoogleSheetsClient, getSpreadsheetId } from './googleSheets';
 
 // הגדרת מבנה הגליונות והכותרות כפי שסיכמנו
 const SHEETS_STRUCTURE = [
@@ -25,15 +25,16 @@ const SHEETS_STRUCTURE = [
  */
 export async function initializeDatabase() {
     const sheets = await getGoogleSheetsClient();
+    const spreadsheetId = getSpreadsheetId();
 
-    if (!SPREADSHEET_ID) {
+    if (!spreadsheetId) {
         throw new Error('GOOGLE_SHEET_ID is missing in .env.local');
     }
 
     try {
         // 1. קבלת מידע על הגיליונות הקיימים בקובץ כרגע
         const metadata = await sheets.spreadsheets.get({
-            spreadsheetId: SPREADSHEET_ID
+            spreadsheetId
         });
         const existingSheets = metadata.data.sheets?.map(s => s.properties?.title) || [];
 
@@ -44,7 +45,7 @@ export async function initializeDatabase() {
 
                 // יצירת הטאב (Sheet) החדש
                 await sheets.spreadsheets.batchUpdate({
-                    spreadsheetId: SPREADSHEET_ID,
+                    spreadsheetId,
                     requestBody: {
                         requests: [{ addSheet: { properties: { title: sheet.title } } }]
                     }
@@ -52,7 +53,7 @@ export async function initializeDatabase() {
 
                 // הזרקת שורת הכותרות (Headers) לשורה הראשונה
                 await sheets.spreadsheets.values.update({
-                    spreadsheetId: SPREADSHEET_ID,
+                    spreadsheetId,
                     range: `${sheet.title}!A1`,
                     valueInputOption: 'RAW',
                     requestBody: { values: [sheet.headers] }

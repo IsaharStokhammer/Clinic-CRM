@@ -12,4 +12,6 @@ export async function getGoogleSheetsClient() {
     return google.sheets({ version: 'v4', auth });
 }
 
-export const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
+export function getSpreadsheetId() {
+    return process.env.GOOGLE_SHEET_ID || '';
+}
