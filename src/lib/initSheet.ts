@@ -24,21 +24,27 @@ const SHEETS_STRUCTURE = [
  * הפונקציה המרכזית שמקימה את המבנה בתוך הגיליון
  */
 export async function initializeDatabase() {
-    const sheets = await getGoogleSheetsClient();
+    // 1. בדיקה בטוחה של המזהה - ללא זריקת שגיאה שתפיל את השרת
     const spreadsheetId = getSpreadsheetId();
 
     if (!spreadsheetId) {
-        throw new Error('GOOGLE_SHEET_ID is missing in .env.local');
+        console.error('❌ Missing GOOGLE_SHEET_ID. Ensure it is set in Vercel Environment Variables.');
+        return {
+            success: false,
+            message: 'המערכת לא מצאה את מזהה הגיליון. אנא בדוק את הגדרות השרת.'
+        };
     }
 
     try {
-        // 1. קבלת מידע על הגיליונות הקיימים בקובץ כרגע
+        const sheets = await getGoogleSheetsClient();
+
+        // 2. קבלת מידע על הגיליונות הקיימים
         const metadata = await sheets.spreadsheets.get({
             spreadsheetId
         });
         const existingSheets = metadata.data.sheets?.map(s => s.properties?.title) || [];
 
-        // 2. ריצה על המבנה המבוקש
+        // 3. ריצה על המבנה המבוקש
         for (const sheet of SHEETS_STRUCTURE) {
             if (!existingSheets.includes(sheet.title)) {
                 console.log(`מקים את הגיליון: ${sheet.title}...`);
@@ -66,6 +72,10 @@ export async function initializeDatabase() {
         return { success: true, message: 'הגיליון אותחל בהצלחה!' };
     } catch (error: any) {
         console.error('שגיאה בתהליך האיתחול:', error.response?.data || error.message);
-        throw error;
+        // מחזירים אובייקט שגיאה במקום לזרוק אותה, כדי למנוע Application Error לבן
+        return {
+            success: false,
+            message: 'אירעה שגיאה בחיבור לגוגל שיטס. וודא שהרשאות ה-Service Account תקינות.'
+        };
     }
 }
